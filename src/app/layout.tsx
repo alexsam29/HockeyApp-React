@@ -23,11 +23,10 @@ export default function RootLayout({
       </head>
       <Flowbite>
         <body className={inter.className}>
-        <Header />
-        {children}
+          <Header />
+          {children}
         </body>
       </Flowbite>
-      
     </html>
   );
 }
