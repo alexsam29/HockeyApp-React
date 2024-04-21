@@ -4,13 +4,23 @@ import Link from "next/link";
 import { CustomFlowbiteTheme, DarkThemeToggle, Navbar } from "flowbite-react";
 
 export default function Header() {
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      // Get the current setting from local storage or default to true
+      const savedMode = localStorage.getItem("darkMode");
+      return savedMode ? JSON.parse(savedMode) : true;
+    }
+    // Default value if window is not defined
+    return true;
+  });
 
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
+      localStorage.setItem("darkMode", "true");
     } else {
       document.documentElement.classList.remove("dark");
+      localStorage.setItem("darkMode", "false");
     }
   }, [darkMode]);
 
@@ -55,13 +65,13 @@ export default function Header() {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <Navbar.Link href="#" active>
+        <Navbar.Link href="/" active>
           Home
         </Navbar.Link>
         <Navbar.Link as={Link} href="#" disabled>
           About
         </Navbar.Link>
-        <Navbar.Link href="#">Services</Navbar.Link>
+        <Navbar.Link href="/standings">Standings</Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
   );
