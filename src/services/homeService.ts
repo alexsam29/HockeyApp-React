@@ -1,8 +1,17 @@
 "use server";
-const API_URL = "https://api-web.nhle.com/v1";
+const WEB_API_URL = "https://api-web.nhle.com";
+const STATS_API_URL = "https://api.nhle.com";
 
 export async function fetchSeasons() {
-  const response = await fetch(`${API_URL}/season`);
+  const response = await fetch(`${WEB_API_URL}/v1/season`);
+  const data = await response.json();
+  return data;
+}
+
+export async function fetchTeams() {
+  const response = await fetch(
+    `${STATS_API_URL}/stats/rest/en/franchise?sort=fullName&include=lastSeason.id&include=firstSeason.id`,
+  );
   const data = await response.json();
   return data;
 }
