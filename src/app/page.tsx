@@ -7,6 +7,7 @@ import { Spinner } from "flowbite-react";
 export default function Home() {
   const [seasons, setSeasons] = useState<any[]>([]);
   const [teams, setTeams] = useState<any[]>([]);
+  const [filteredTeams, setFilteredTeams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,10 +15,27 @@ export default function Home() {
       ([seasonsData, teamsData]) => {
         setSeasons(seasonsData);
         setTeams(teamsData.data);
+        setFilteredTeams(teamsData.data);
         setLoading(false);
       },
     );
   }, []);
+
+  const handleSelect = (value: any) => {
+    let season = Number(value);
+    if (!isNaN(season)) {
+      const newFilteredTeams = teams.filter((team) => {
+        if (
+          !isNaN(season) &&
+          team.firstSeason.id <= season &&
+          (team.lastSeason === null || team.lastSeason.id >= season)
+        ) {
+          return team;
+        }
+      });
+      setFilteredTeams(newFilteredTeams);
+    }
+  };
 
   if (loading) {
     return (
@@ -31,10 +49,18 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-5">
       <h1 className="text-5xl font-bold">NHL Stats Summary</h1>
-      <div className="pt-5 flex flex-col space-y-4 sm:flex-row sm:space-x-10 sm:items-end">
-        <Drop_down type="Year" options={seasons} />
-        <Drop_down type="Season" options={["Regular Season", "Playoffs"]} />
-        <Drop_down type="Team" options={teams} />
+      <div className="pt-5 flex flex-col space-y-4 w-full sm:w-auto sm:flex-row sm:space-x-10 sm:items-end">
+        <Drop_down type="Year" options={seasons} onSelect={handleSelect} />
+        <Drop_down
+          type="Season"
+          options={["Regular Season", "Playoffs"]}
+          onSelect={handleSelect}
+        />
+        <Drop_down
+          type="Team"
+          options={filteredTeams}
+          onSelect={handleSelect}
+        />
       </div>
     </main>
   );
