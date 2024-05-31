@@ -1,5 +1,3 @@
-import { Dropdown, DropdownItem } from "flowbite-react";
-
 interface DropDownProps {
   type: string;
   options: any[];
