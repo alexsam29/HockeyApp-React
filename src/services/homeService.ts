@@ -15,3 +15,15 @@ export async function fetchTeams() {
   const data = await response.json();
   return data;
 }
+
+export async function fetchSkaterPoints(
+  year: string,
+  gameType: string,
+  team: string = "",
+) {
+  const response = await fetch(
+    `${STATS_API_URL}/stats/rest/en/leaders/skaters/points?cayenneExp=season=${year}%20and%20gameType=${gameType}`,
+  );
+  const data = await response.json();
+  return data;
+}
