@@ -12,15 +12,21 @@ import Stats_card from "@/components/stats-card";
 import { GameTypes } from "@/constants/gameTypes";
 
 export default function Home() {
+  // Dropdown Options
   const [seasons, setSeasons] = useState<any[]>([]);
   const [teams, setTeams] = useState<any[]>([]);
   const [filteredTeams, setFilteredTeams] = useState<any[]>([]);
+
+  // Dropdown Selections
   const [selectedYear, setSelectedYear] = useState<any>(null);
   const [selectedGameType, setSelectedGameType] = useState<string>(
     GameTypes.REGULAR_SEASON,
   );
   const [selectedTeam, setSelectedTeam] = useState<string>("");
+
+  // Loading States
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   // Skater Stats
   const [skaterPoints, setSkaterPoints] = useState<any[]>([]);
@@ -85,17 +91,20 @@ export default function Home() {
   };
 
   const handleSearch = () => {
-    fetchSkaterPoints(selectedYear, selectedGameType, selectedTeam).then(
-      (skaterPointsData) => {
-        setSkaterPoints(skaterPointsData.data);
-      },
-    );
+    setSearchLoading(true);
 
-    fetchSkaterGoals(selectedYear, selectedGameType, selectedTeam).then(
-      (skaterGoalsData) => {
+    Promise.all([
+      fetchSkaterPoints(selectedYear, selectedGameType, selectedTeam),
+      fetchSkaterGoals(selectedYear, selectedGameType, selectedTeam),
+    ])
+      .then(([skaterPointsData, skaterGoalsData]) => {
+        setSkaterPoints(skaterPointsData.data);
         setSkaterGoals(skaterGoalsData.data);
-      },
-    );
+        setSearchLoading(false);
+      })
+      .catch(() => {
+        setSearchLoading(false);
+      });
   };
 
   if (loading) {
@@ -126,13 +135,22 @@ export default function Home() {
           Search
         </Button>
       </div>
-      <div className="mt-10 mb-5">
-        <h2 className="text-3xl font-bold">Skaters</h2>
-      </div>
-      <div className="flex flex-wrap flex-row justify-center gap-5">
-        <Stats_card type="Points" data={skaterPoints}></Stats_card>
-        <Stats_card type="Goals" data={skaterGoals}></Stats_card>
-      </div>
+      {searchLoading ? (
+        <div className="flex flex-col items-center justify-center mt-20">
+          <Spinner aria-label="Loading" size="xl" />
+          <p className="mt-2">Loading...</p>
+        </div>
+      ) : (
+        <>
+          <div className="mt-10 mb-5">
+            <h2 className="text-3xl font-bold">Skaters</h2>
+          </div>
+          <div className="flex flex-wrap justify-center gap-5">
+            <Stats_card type="Points" data={skaterPoints}></Stats_card>
+            <Stats_card type="Goals" data={skaterGoals}></Stats_card>
+          </div>
+        </>
+      )}
     </main>
   );
 }
