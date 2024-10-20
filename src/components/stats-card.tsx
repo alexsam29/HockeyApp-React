@@ -8,16 +8,21 @@ interface StatsCardProps {
 export default function Stats_card({ type, data = [] }: StatsCardProps) {
   if (type === "Points") {
     return (
-      <div className="m-5">
-        <Card className="max-w-sm">
+      <div className="">
+        <Card className="max-w-xs sm:max-w-md overflow-x-auto">
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
             {type}
           </h5>
           <Table>
             <Table.Head>
               <Table.HeadCell>Team</Table.HeadCell>
+              <Table.HeadCell>
+                <Tooltip content="Position">Pos</Tooltip>
+              </Table.HeadCell>
               <Table.HeadCell>Player</Table.HeadCell>
-              <Table.HeadCell>Pts</Table.HeadCell>
+              <Table.HeadCell>
+                <Tooltip content="Points">Pts</Tooltip>
+              </Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {Array.isArray(data) &&
@@ -31,6 +36,7 @@ export default function Stats_card({ type, data = [] }: StatsCardProps) {
                         {item.team.triCode}
                       </Tooltip>
                     </Table.Cell>
+                    <Table.Cell>{item.player.positionCode}</Table.Cell>
                     <Table.Cell className="font-medium text-gray-900 dark:text-white">
                       {item.player.fullName}
                     </Table.Cell>

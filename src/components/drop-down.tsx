@@ -37,7 +37,7 @@ export default function Drop_down({ type, options, onSelect }: DropDownProps) {
             <option value="">All Teams</option>
             {[...options].map((option, index) => {
               return (
-                <option key={index} value={option.fullName}>
+                <option key={index} value={option.id}>
                   {option.fullName}
                 </option>
               );

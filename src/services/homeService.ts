@@ -21,8 +21,9 @@ export async function fetchSkaterPoints(
   gameType: string,
   team: string = "",
 ) {
+  const teamQuery = team ? `%20and%20team.franchiseId=${team}` : "";
   const response = await fetch(
-    `${STATS_API_URL}/stats/rest/en/leaders/skaters/points?cayenneExp=season=${year}%20and%20gameType=${gameType}`,
+    `${STATS_API_URL}/stats/rest/en/leaders/skaters/points?cayenneExp=season=${year}%20and%20gameType=${gameType}${teamQuery}`,
   );
   const data = await response.json();
   return data;
