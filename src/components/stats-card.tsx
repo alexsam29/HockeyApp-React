@@ -1,4 +1,5 @@
-import { Card, Table, Tooltip } from "flowbite-react";
+import { Alert, Card, Table, Tooltip } from "flowbite-react";
+import { HiXCircle } from "react-icons/hi";
 
 interface StatsCardProps {
   type: string;
@@ -24,7 +25,7 @@ export default function Stats_card({ type, data = [] }: StatsCardProps) {
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {Array.isArray(data) &&
+            {Array.isArray(data) && data.length > 0 ? (
               data.map((item, index) => (
                 <Table.Row
                   key={index}
@@ -43,7 +44,16 @@ export default function Stats_card({ type, data = [] }: StatsCardProps) {
                     {item.points}
                   </Table.Cell>
                 </Table.Row>
-              ))}
+              ))
+            ) : (
+              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell colSpan={4} className="text-center">
+                  <Alert color="failure" icon={HiXCircle}>
+                    <span className="font-medium">No data available</span>
+                  </Alert>
+                </Table.Cell>
+              </Table.Row>
+            )}
           </Table.Body>
         </Table>
       </Card>
@@ -67,7 +77,7 @@ export default function Stats_card({ type, data = [] }: StatsCardProps) {
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {Array.isArray(data) &&
+            {Array.isArray(data) && data.length > 0 ? (
               data.map((item, index) => (
                 <Table.Row
                   key={index}
@@ -86,7 +96,16 @@ export default function Stats_card({ type, data = [] }: StatsCardProps) {
                     {item.goals}
                   </Table.Cell>
                 </Table.Row>
-              ))}
+              ))
+            ) : (
+              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell colSpan={4} className="text-center">
+                  <Alert color="failure" icon={HiXCircle}>
+                    <span className="font-medium">No data available</span>
+                  </Alert>
+                </Table.Cell>
+              </Table.Row>
+            )}
           </Table.Body>
         </Table>
       </Card>
