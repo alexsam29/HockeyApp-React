@@ -3,6 +3,7 @@ import Drop_down from "@/components/drop-down";
 import { useEffect, useState } from "react";
 import {
   fetchSeasons,
+  fetchSkaterGoals,
   fetchSkaterPoints,
   fetchTeams,
 } from "@/services/homeService";
@@ -14,13 +15,16 @@ export default function Home() {
   const [seasons, setSeasons] = useState<any[]>([]);
   const [teams, setTeams] = useState<any[]>([]);
   const [filteredTeams, setFilteredTeams] = useState<any[]>([]);
-  const [skaterPoints, setSkaterPoints] = useState<any[]>([]);
   const [selectedYear, setSelectedYear] = useState<any>(null);
   const [selectedGameType, setSelectedGameType] = useState<string>(
     GameTypes.REGULAR_SEASON,
   );
   const [selectedTeam, setSelectedTeam] = useState<string>("");
   const [loading, setLoading] = useState(true);
+
+  // Skater Stats
+  const [skaterPoints, setSkaterPoints] = useState<any[]>([]);
+  const [skaterGoals, setSkaterGoals] = useState<any[]>([]);
 
   useEffect(() => {
     Promise.all([fetchSeasons(), fetchTeams()]).then(
@@ -37,8 +41,14 @@ export default function Home() {
           GameTypes.REGULAR_SEASON,
         ).then((skaterPointsData) => {
           setSkaterPoints(skaterPointsData.data);
-          setLoading(false);
         });
+        fetchSkaterGoals(
+          seasonsData[seasonsData.length - 1],
+          GameTypes.REGULAR_SEASON,
+        ).then((skaterGoalsData) => {
+          setSkaterGoals(skaterGoalsData.data);
+        });
+        setLoading(false);
       },
     );
   }, []);
@@ -80,6 +90,12 @@ export default function Home() {
         setSkaterPoints(skaterPointsData.data);
       },
     );
+
+    fetchSkaterGoals(selectedYear, selectedGameType, selectedTeam).then(
+      (skaterGoalsData) => {
+        setSkaterGoals(skaterGoalsData.data);
+      },
+    );
   };
 
   if (loading) {
@@ -110,11 +126,12 @@ export default function Home() {
           Search
         </Button>
       </div>
-      <div className="mt-10">
+      <div className="mt-10 mb-5">
         <h2 className="text-3xl font-bold">Skaters</h2>
       </div>
-      <div className="flex flex-wrap flex-row justify-center">
+      <div className="flex flex-wrap flex-row justify-center gap-5">
         <Stats_card type="Points" data={skaterPoints}></Stats_card>
+        <Stats_card type="Goals" data={skaterGoals}></Stats_card>
       </div>
     </main>
   );
